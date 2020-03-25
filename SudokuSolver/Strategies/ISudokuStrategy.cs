@@ -8,6 +8,6 @@ namespace SudokuSolver.Strategies
 {
     interface ISudokuStrategy
     {
-        int[,] Solve(int[,] SudokuBoard);
+        int[,] Solve(int[,] sudokuBoard);
     }
 }
