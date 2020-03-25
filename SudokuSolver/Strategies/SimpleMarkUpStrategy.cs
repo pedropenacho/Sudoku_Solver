@@ -50,9 +50,9 @@ namespace SudokuSolver.Strategies
 
             var sudokuMap = _sudokuMapper.Find(givenRow, givenCol);
 
-            for (int row = sudokuMap.StartRow; row < sudokuMap.StartRow - 2; row++)
+            for (int row = sudokuMap.StartRow; row <= sudokuMap.StartRow + 2; row++)
             {
-                for (int col = sudokuMap.StartCol; row < sudokuMap.StartCol - 2; col++)
+                for (int col = sudokuMap.StartCol; row <= sudokuMap.StartCol + 2; col++)
                 {
                     //Interates through all columns and rows in the 3*3 group and check if value inside cell is within 1-9, if yes turns it to zero inside the possibilities array so it cannot be used again
                     if (IsValidSingle(sudokuBoard[row, col])) possibilities[sudokuBoard[row, col] - 1] = 0;
