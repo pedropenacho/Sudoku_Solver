@@ -31,11 +31,11 @@ namespace SudokuSolver.Strategies
             return sudokuBoard;
         }
 
-        private object GetPossibilitiesInRowAndCol(int[,] sudokuBoard, int givenRow, int givenCol)
+        private int GetPossibilitiesInRowAndCol(int[,] sudokuBoard, int givenRow, int givenCol)
         {
             int[] possibilities = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-            //This will iterate through all columns and rows, check each cell value and confirm that they are between 1-9, if they are access the possibilities array in its correct index and turn its value to 0, so that number cannot be used again.
+            //Interates through all columns and rows, check each cell value and confirm that they are between 1-9, if they are access the possibilities array in its correct index and turn its value to 0, so that number cannot be used again.
             for (int col = 0; col < 9; col++) if (IsValidSingle(sudokuBoard[givenRow, col])) possibilities[sudokuBoard[givenRow, col] - 1] = 0;
             for (int row = 0; row < 9; row++) if (IsValidSingle(sudokuBoard[row, givenCol])) possibilities[sudokuBoard[row, givenCol] - 1] = 0;
 
@@ -44,20 +44,39 @@ namespace SudokuSolver.Strategies
         }
 
 
-        private object GetPossibilitiesInBlock(int[,] sudokuBoard, int row, int col)
+        private int GetPossibilitiesInBlock(int[,] sudokuBoard, int givenRow, int givenCol)
         {
-            throw new NotImplementedException();
+            int[] possibilities = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+            var sudokuMap = _sudokuMapper.Find(givenRow, givenCol);
+
+            for (int row = sudokuMap.StartRow; row < sudokuMap.StartRow - 2; row++)
+            {
+                for (int col = sudokuMap.StartCol; row < sudokuMap.StartCol - 2; col++)
+                {
+                    //Interates through all columns and rows in the 3*3 group and check if value inside cell is within 1-9, if yes turns it to zero inside the possibilities array so it cannot be used again
+                    if (IsValidSingle(sudokuBoard[row, col])) possibilities[sudokuBoard[row, col] - 1] = 0;
+                }
+            }
+
+            return Convert.ToInt32(String.Join(string.Empty, possibilities.Select(p => p).Where(p => p != 0)));
         }
 
-
-        private int GetPossibilityIntersection(object possibilitiesInRowAndCol, object possibilitiesInBlock)
-        {
-            throw new NotImplementedException();
-        }
 
         private bool IsValidSingle(int cellDigit)
         {
             return cellDigit != 0 && cellDigit.ToString().Length == 1;
         }
+
+        private int GetPossibilityIntersection(int possibilitiesInRowAndCol, int possibilitiesInBlock)
+        {
+            var possibilitiesInRowAndColCharArray = possibilitiesInRowAndCol.ToString().ToCharArray();
+            var possibilitiesInBlockCharArray = possibilitiesInBlock.ToString().ToCharArray();
+            var finalPossibilities = possibilitiesInRowAndColCharArray.Intersect(possibilitiesInBlockCharArray);
+
+            return Convert.ToInt32(String.Join(string.Empty, finalPossibilities));
+        }
+
+        
     }
 }
